@@ -263,8 +263,12 @@ Applies to slot bookings (D11) and to VIP where a salon configures a charge
 
 ## D21 — This is a demo build
 
-Iteration 1 is for demonstration. **Maximise feature breadth**; mock or provide a
-credible alternate wherever something cannot be built for real.
+Iteration 1 is for demonstration. **Maximise feature breadth**; mock external
+integrations that cannot be built for real.
+
+**Scope is demo-sized; code quality is production-grade.** The real product
+starts from this codebase with no or minimal change. Mocks go behind replaceable
+interfaces; domain logic is written for keeps.
 
 **Consequence — reframes several "blocking" concerns:** payment processing, real
 SMS/WhatsApp delivery, and AI duration learning (D6) are all mockable. Concerns
@@ -346,6 +350,99 @@ the assignment algorithm.
 Per-specialist counts are visible (E3/E4) so specialists can check their own
 numbers, but the system does not equalise.
 
+## D27 — The role set is per-salon configuration (resolves e, g, n)
+
+Approved 2026-09-07. Stage-1 grill of E1.
+
+There is **no fixed role enum**. A salon has anywhere from **1 to 5 roles** and
+composes its own: a solo owner doing everything; owner + staff; owner +
+receptionist + stylist; owner + manager + receptionist + stylist; and so on.
+**One person may hold several roles** — the owner who also cuts hair is a
+first-class case, not an edge case.
+
+**Consequence — permissions attach to capabilities, not role names.** Nothing in
+the code may test for "admin", because no salon is guaranteed to have one. E1
+defines a fixed set of capabilities (edit catalog, confirm bookings, settle
+charges, receive escalations, perform services, view business analytics, …) and
+a salon composes named roles out of them. This is D2's configurability applied
+to people rather than modes.
+
+**Resolves open item n.** D25's "reports to the admin" becomes *reports to
+whoever holds the `receives_escalations` capability*, **falling back to the
+owner** when nobody does. The owner capability always exists — it is the one
+thing a salon cannot configure away.
+
+## D28 — E1 configuration answers
+
+Approved 2026-09-07. Stage-1 grill of E1.
+
+- **VIP pricing: build all three.** Surcharge, multiplier, and replacement price
+  are all implemented; the owner picks one per salon. Consistent with D9 —
+  developers build the options, salons configure.
+- **Three extensible axes** (resolves gap 4): booking mode, specialist-selection
+  mode, and cancellation rule are all extension points under D9.
+- **Multi-branch is one tenant.** No separate branch entity in v1.
+- **Service mapping is a simple boolean** — a specialist either performs a
+  service or does not. No skill level, no rating.
+- **Durations are visible to everyone.** A default may be supplied, but every
+  salon must set its own; for genuinely new service entries a default is not
+  meaningful.
+
+**Knock-on — open item b ("best artist") has no data.** A boolean mapping cannot
+rank anyone. That specialist-selection mode must either drop from v1, or be
+redefined as an explicit owner-authored ranking rather than an inferred one.
+**Carried to E2's stage 1.**
+
+## D29 — Mid-day closure does not auto-cancel (PROPOSED, delegated)
+
+Delegated 2026-09-07 with "do what feels relevant, right and feasible... and not
+let the barber down". **Proposed, not yet approved.**
+
+When an owner closes hours mid-day (D7):
+
+- New bookings in the closed window stop **immediately**.
+- Bookings **already committed** inside that window are **not auto-cancelled**.
+  They are flagged *at risk* and the owner is shown the short list with one
+  decision per booking: **notify and cancel**, or **keep**.
+- Cancellations made this way are **salon-initiated**: no `charge_owed` against
+  the customer (D24 charges are for customer-initiated cancellations), and they
+  are tagged distinctly so E4's lost-demand reporting does not record them as
+  customer churn.
+
+**Rationale.** Silent auto-cancel destroys trust with the exact customers who
+already committed. Silently keeping them means the barber arrives at an
+emergency closure to find customers turning up. Forcing one explicit choice over
+a short list is the honest middle, and it is cheap to build. The distinct tag is
+what stops an emergency from polluting the churn numbers.
+
+## D30 — The committed price is honoured (PROPOSED, delegated)
+
+Delegated 2026-09-07 with "do whatever you like and feel relevant". **Proposed,
+not yet approved.**
+
+Price is **captured onto the booking at commit time** and honoured at service
+time. Catalog and public-page price changes apply to **new bookings only**.
+
+**Rationale.** Charging a different price than the one quoted is the fastest way
+to lose a customer, and F04's "live-accurate" requirement is about the *public
+page*, not about repricing existing commitments. It is also cheap — one
+denormalised field — and E4 needs the as-charged price anyway for accurate
+historical spend.
+
+## D31 — The public page ships in E1; E3 fills the queue slot (PROPOSED, delegated)
+
+Delegated 2026-09-07 with "take the decision relevant to you". **Proposed, not
+yet approved.**
+
+E1 ships the public page with what E1 owns: services, prices, hours, open/closed.
+Queue length and current wait (D23) render as a **section that appears when E3
+lands**, and are absent until then.
+
+**Rationale.** The page is E1's surface; the live queue is a widget on it. This
+keeps the epic boundary clean without changing what finally ships — and given
+the whole build is a week, this is build order rather than a real boundary
+question.
+
 ---
 
 # Contradictions to resolve
@@ -394,17 +491,17 @@ passes at stage 1, not in a single up-front sweep.
 | # | Question | Feature |
 | --- | --- | --- |
 | a | Who grants VIP eligibility — owner allowlist, paid tier, both? | F01 |
-| b | "Best artist" — by what measure? No rating system exists | F01 |
+| b | "Best artist" — by what measure? **D28 removes the data**: boolean mapping cannot rank. Drop the mode, or make it an owner-authored ranking | E2 |
 | c | Late arrival: the 10-min-early rule is stated; the penalty is not | F01/F02 |
 | d | Notification lead time — "X minutes/hours" has no value; SMS/WhatsApp is metered (D8) | F02 |
-| e | Owner vs. admin: four roles or five? | F10 |
+| ~~e~~ | ~~Owner vs. admin: four roles or five?~~ **Resolved by D27** — no fixed enum, 1–5 per-salon | E1 |
 | ~~f~~ | ~~Guest booking, or account required?~~ **Resolved by D22** — login required, no guest booking | F10 |
-| g | One person holding two roles (owner who also cuts hair) | F10 |
+| ~~g~~ | ~~One person holding two roles~~ **Resolved by D27** — yes, first-class | E1 |
 | h | "Relations of this person with me" — family, referral, or loyalty tier? | F06 |
 | i | Consent, retention, and messaging opt-out — live now that D8 picks SMS/WhatsApp | F06/F08 |
 | ~~j~~ | ~~Forgot-to-press behaviour for the three controls~~ **Resolved by D25** | E3 |
 | k | Exact trigger condition for the "wanted to book" button (D1) | F01 |
 | l | Can VIP preempt an **in-progress** service, or only insert ahead in queue? | F01/F02 |
 | m | Can a next-available service be refused if it would overrun a reserved slot? (D13) | E3 |
-| n | Nudge escalation target: who is "admin"? Depends on **e** | E3 |
+| ~~n~~ | ~~Nudge escalation target~~ **Resolved by D27** — `receives_escalations` capability, falling back to owner | E3 |
 | o | Time-change request/approve flow — where it lives, and whether the original timestamp is retained (D25) | E3 |

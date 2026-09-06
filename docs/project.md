@@ -36,12 +36,22 @@ Whether owner and admin are one role is **undecided** — see
 production depth.
 
 - Include as many features as can be shown.
-- Where something cannot be built for real, **mock it or provide a credible
-  alternate** — a convincing mock is the correct answer, not a gap.
-- Do not over-engineer production concerns: payment processing, real SMS/
-  WhatsApp delivery, and ML duration learning are all legitimately mockable.
-- This does not license sloppy structure. Configurability (D2/D9) is
-  architectural and must be real, because retrofitting it is a rewrite.
+- Where an **external integration** cannot be built for real, mock it — payment
+  processing, real SMS/WhatsApp delivery, and ML duration learning are all
+  legitimately mockable.
+
+**"Demo" scopes the feature set. It does not lower the code bar.**
+
+The production build starts from this code and should need **no or minimal
+change**. So:
+
+- Write real code with real structure. Mocks sit behind interfaces the real
+  implementation can replace.
+- Domain logic — the queue engine, slot protection, state machine, config
+  resolution — is **not** mocked. It is the product.
+- Configurability (D2/D9) is architectural and must be real. Retrofitting it is
+  a rewrite.
+- Tests, module seams, and layering are in scope, not deferred polish.
 
 ## Iteration 1 scope
 
