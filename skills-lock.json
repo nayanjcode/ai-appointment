@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "skills": {
+    "grill-me": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grill-me/SKILL.md",
+      "computedHash": "9cdbb4b8f7a3aeaef82e6230c9e823500d4a8a1214c726cf342cf9829d34fc7d"
+    },
+    "grilling": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grilling/SKILL.md",
+      "computedHash": "4dd886b0196bf43729d954ae326016f2bd9f5f79d892500b407c33a753362f14"
+    },
+    "hamburger-method": {
+      "source": "eferro/augmented-lean-delivery",
+      "sourceType": "github",
+      "skillPath": "hamburger-method/SKILL.md",
+      "computedHash": "1f5e9c024cf47dc0f1bf9d3753f5f4b5cdc256673d9e75f9b459cb3a9bf29e83"
+    },
+    "slice": {
+      "source": "thoughtbot/rails-consultant",
+      "sourceType": "github",
+      "skillPath": "skills/slice/SKILL.md",
+      "computedHash": "e3165305d11163b40e18d9f15caa54468359a0fab242cb85e879b402ebd52480"
+    },
+    "slice-the-spec": {
+      "source": "kambleakash0/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/slice-the-spec/SKILL.md",
+      "computedHash": "fe6fcdb94989da2a5ed830ee82f7785ef7d6354428152a23c439ee7b2c0f5887"
+    },
+    "spec-writer": {
+      "source": "kambleakash0/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/spec-writer/SKILL.md",
+      "computedHash": "52b23d8273ef5deae3568081117f01acb721c783a6011c63d885846507f62f53"
+    },
+    "story-splitting": {
+      "source": "eferro/augmented-lean-delivery",
+      "sourceType": "github",
+      "skillPath": "story-splitting/SKILL.md",
+      "computedHash": "1841f76ad9da75b52e68bb441bc705fe401b5f40552a585a97c12e31a5ba9edc"
+    }
+  }
+}

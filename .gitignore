@@ -1,0 +1,29 @@
+# IDE
+.idea/
+.vscode/
+
+# Dependencies / build
+node_modules/
+dist/
+build/
+*.log
+
+# graphify — generated, rebuildable with `graphify update .`
+graphify-out/
+
+# OpenWolf — volatile per-machine state.
+# .wolf/cerebrum.md, anatomy.md, memory.md and buglog.json are intentionally
+# tracked: they are shared project learning, not machine state.
+.wolf/token-ledger.json
+.wolf/cron-state.json
+.wolf/suggestions.json
+.wolf/designqc-report.json
+
+# Env
+.env
+.env.*
+!.env.example
+
+.claude
+.wolf
+.agents
