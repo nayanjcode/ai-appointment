@@ -34,15 +34,19 @@ system of its own.
 
 ## Open questions
 
-- **Cross-talk is unsolved.** Source raises it and does not resolve it:
-  multiple specialists in one room means one person's voice command is picked
-  up by another's session. Confirmation-before-commit reduces blast radius but
-  does not solve capture. This is the single largest technical risk in the
-  product.
+- **Cross-talk: partially mitigated, not solved (D12).** The accepted controls
+  — confirmation, availability gating, per-artist auth — are *authorization*,
+  and the collision case is two authenticated on-duty artists in one room, where
+  every check passes. See [VOICE-CROSSTALK.md](VOICE-CROSSTALK.md) for capture-
+  level options and the v1 scoping recommendation.
+- **Decided (D15): both customers and staff**, phone audio, no external
+  hardware. Wake word plus clarify-and-reject. Customers cannot start or stop a
+  service, which bounds cross-talk to staff writes.
+- Residual: wake-word accuracy under salon noise with the phone at counter
+  distance. See [VOICE-CROSSTALK.md](VOICE-CROSSTALK.md).
 - **Booking on behalf of another specialist** — source asks whether this is
   acceptable and never answers.
-- **Who is the voice user?** Customer, specialist, or both? The narrative
-  implies both, but a customer-facing voice UI and a staff-facing one have
-  different vocabularies, auth, and failure costs.
+- **Mode vocabulary is now finite (D9).** Developers author mode types, so the
+  assistant never meets an unknown mode — this removes a risk flagged earlier.
 - Ambient noise in a salon (dryers, clippers, music) — no mitigation stated.
 - What happens on repeated misrecognition? No escape hatch defined.

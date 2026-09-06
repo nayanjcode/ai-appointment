@@ -31,15 +31,13 @@ ship *after* them, not alongside.
 
 ## Open questions
 
-- **"Lost deals due to xyz reasons" cannot be measured for the main loss
-  channel.** The source's own loss cases are missed calls and customers who
-  walked out — both invisible to a system that never sees the phone. Once call
-  agents are out of scope, the largest category of lost deal is unobservable.
-  Analytics can only report abandoned in-app bookings and cancellations. This
-  gap should be stated plainly rather than papered over.
-- "If the customer is satisfied and finds new shop more good" (#6) implies churn
-  detection or satisfaction capture. Neither has a data source. Survey? Absence
-  of return visits?
+- **Largely resolved by D1.** Walk-ins are booked, so walkouts record as
+  cancellations; the "wanted to book" button captures turned-away demand; and
+  lapsed-regular detection covers churn via absence of return visits. Missed
+  *phone* calls remain unobservable, but they are no longer the only signal.
+- Still open: is churn inferred purely from absence, or is satisfaction captured
+  directly (survey, rating)? D1 implies the former; F01's "best artist" mode
+  (O5b) would need the latter.
 - Is this a dashboard, a scheduled report, or a voice query surface?
 - What volume of history makes any of this statistically meaningful? A single
   salon generates thin data.

@@ -40,6 +40,11 @@ anything inside them — no action needed:
   clean. Dispatch parallel agents in a single message so they run concurrently.
 - Do not spawn agents for trivial work where the overhead exceeds the task, or
   where you need to see raw command output to report it faithfully.
+- **If a skill exists for the task, use it — do not improvise its work inline.**
+  When the skill is user-invoked only (`disable-model-invocation: true`), stop
+  and ask the user to run it. Answering the questions yourself, one at a time,
+  across several turns is *not* a substitute: it drops the skill's discipline,
+  and it drifts silently because each individual answer looks reasonable.
 
 ## Operating principles
 

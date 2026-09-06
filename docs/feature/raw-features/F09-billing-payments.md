@@ -18,12 +18,21 @@ problem section. Under-specified relative to its risk.
 
 F01 (what is owed), F04 (price), F08 (discount), F07 (reporting).
 
+## Decided (see DECISIONS.md)
+
+- **D11.** Slot booking blocks 50% at booking time and carries a cancellation
+  charge. Next-available blocks nothing and charges nothing. This makes the slot
+  charge enforceable — the gap flagged earlier.
+
 ## Open questions
 
-- **Prepay or pay-after?** This changes F01 entirely. Cancellation *charges* on
-  VIP and specific-slot bookings only work if payment details are captured at
-  booking time — otherwise the charge is unenforceable and the policy is
-  decorative.
+- **C1 supersedes most of this feature for v1.** D18 defers payments to a later
+  version, which removes the 50% block (D11) and any collectible cancellation
+  charge including VIP (D17). Decide C1 before treating this feature as v1 scope
+  at all.
+- If C1 lands on option 2 (record as owed, settle in cash), this feature reduces
+  to a small ledger. If option 3 (no-show tracking), it leaves F09 entirely and
+  becomes an F06/F07 concern.
 - Payment provider, settlement, and refund flow: unspecified.
 - Partial service, walkout, or dispute: unspecified.
 - Cash remains common in this segment. Is cash recorded in-app so F07 sees

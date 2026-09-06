@@ -27,27 +27,23 @@ the out-of-area regular who only visits occasionally.
 
 It also removes F07's ability to measure the largest category of lost deal.
 
-## Problem 8 has no feature — and implies a different product
+## ~~Problem 8 has no feature~~ — RESOLVED (D1)
 
-> "Customers pain in finding a new shop in case of unavailability and emergency"
+**This section's original reading was wrong.** It read problem 8 as customer-side
+cross-salon discovery, implying a marketplace. The intended meaning was the
+salon's view of the same event: detecting and capturing lost demand. See
+[DECISIONS.md](DECISIONS.md) D1.
 
-Every other problem is **one salon's** operational pain. This one is a
-**customer's cross-salon discovery** need. Serving it means a marketplace with
-multiple salons, public search, and cross-salon availability — a different
-business model, go-to-market, and data model from B2B salon software.
-
-**Decision needed before any roadmap:** is this a salon SaaS or a marketplace?
-Deferring it is fine. Leaving it ambiguous is not — it changes F04's tenancy
-model and F10's identity model, both of which are upstream of everything.
+Scope is unchanged: single-salon B2B. No marketplace decision is needed.
 
 ## Contradictions in the source
 
 1. **Receptionist: role or target?** Listed as a supported role layer, while the
    stated value is eliminating the position. Both can be true; confirm which.
 2. **Owner vs. admin** used interchangeably. Four roles or five?
-3. **VIP vs. ETA integrity.** F01's VIP mode and F02's live-ETA promise are in
-   direct tension — every queue jump invalidates the estimates F02 just sent to
-   everyone behind it. The source promises both without reconciling them.
+3. ~~**VIP vs. ETA integrity.**~~ **Resolved (D5).** ETAs are explicitly mutable,
+   not promises. VIP inserts are one of several reshuffle triggers. Residual
+   question is only whether VIP can preempt an *in-progress* service.
 4. **Cancellation charges vs. payment timing.** F01 mandates charges on two
    modes; F09 never establishes that payment details are captured at booking.
    Unenforceable as written.
@@ -57,10 +53,13 @@ model and F10's identity model, both of which are upstream of everything.
 | # | Risk | Feature |
 | --- | --- | --- |
 | 1 | Voice cross-talk between specialists in one room — raised in source, never solved | F03 |
-| 2 | "Very very generic" config is unbounded — fixed schema vs. rules engine | F04 |
-| 3 | Service-duration estimates have no stated source; all ETAs depend on them | F02 |
-| 4 | Salon acoustics vs. voice-first as the *primary* interface | F03 |
-| 5 | Payment/compliance scope not decided | F09 |
+| 2 | Artist-confirmation timeout undefined; strands the customer mid-booking (D3/O2) | F01/F05 |
+| 3 | Rules-engine config confirmed (D2) — but who authors a new mode is open (O1) | F04 |
+| 4 | Payment timing undecided; cancellation charges unenforceable without it | F09 |
+| 5 | Salon acoustics vs. voice-first as the *primary* interface | F03 |
+| 6 | Reliability rests on artists pressing three separate controls (D3/D4) | F05 |
+
+~~Service-duration estimates~~ resolved by D6.
 
 ## Not in the source, but load-bearing
 
@@ -68,7 +67,8 @@ Raised here because their absence will surface as rework, not because the
 source discussed them:
 
 - No-show and late-arrival policy (F01/F02)
-- Notification channel and deliverability (F02/F08)
+- ~~Notification channel~~ — resolved (D8: SMS/WhatsApp). Deliverability and
+  per-message cost are now open instead
 - Consent, data retention, and messaging opt-out (F06/F08)
 - Cold-start behaviour: a salon with no history has no durations, no trends, no
   analytics

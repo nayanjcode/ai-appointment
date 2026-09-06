@@ -25,10 +25,15 @@ Nothing. F04 is upstream of F01, F02, F07, F08, F09.
 
 ## Open questions
 
-- **How generic is "generic"?** A fixed schema with per-tenant values is a
-  week. A user-defined schema (salons invent their own modes and rules) is a
-  rules engine. Source says "very very generic" without bounding it. This one
-  answer changes the build size more than any other in the document.
-- Who edits config — owner only, or admin role too?
+- **Answered (D2): the rules-engine end.** Salons configure which modes exist,
+  their prices, and can introduce new modes — of booking, specialist selection,
+  cancellation, and more. Must be designed in from day one.
+- **Still open (O1): who authors a new mode?** Owner via a rule-definition UI,
+  or a developer making a low-effort change. Different products.
+- Who edits config — owner only, or admin role too? (See also O5e: is admin
+  even a distinct role from owner?)
+- Owner can change shop timings live, including to stop taking orders in an
+  emergency (D7). What happens to bookings already made in a window that is
+  then closed?
 - Is service duration a single number, or per-specialist?
 - Multi-branch salons: one tenant or many?

@@ -30,6 +30,19 @@ by answering calls, but by removing the reasons to place them.
 Whether owner and admin are one role is **undecided** — see
 `docs/feature/raw-features/SCOPE-AND-CONFLICTS.md`.
 
+## Build posture: this is a demo
+
+**Iteration 1 is a demo build.** Optimise for **feature breadth**, not
+production depth.
+
+- Include as many features as can be shown.
+- Where something cannot be built for real, **mock it or provide a credible
+  alternate** — a convincing mock is the correct answer, not a gap.
+- Do not over-engineer production concerns: payment processing, real SMS/
+  WhatsApp delivery, and ML duration learning are all legitimately mockable.
+- This does not license sloppy structure. Configurability (D2/D9) is
+  architectural and must be real, because retrofitting it is a rewrite.
+
 ## Iteration 1 scope
 
 **In:**

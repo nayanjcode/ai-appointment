@@ -43,8 +43,16 @@ Then build.
   obvious split point but is still too large, use `/hamburger-method` instead
   (generates options per layer, composes minimal end-to-end slices).
 - **`/grill-me` and `/slice` are user-invoked only** (`disable-model-invocation:
-  true`). You cannot trigger them. When a stage calls for one, stop and tell the
-  user to run it. `grilling` is the model-invocable implementation behind
+  true`). You cannot trigger them. When a stage calls for one, **stop and tell
+  the user to run it, then wait.**
+  - Do **not** ask the stage's questions yourself instead. That has already
+    happened once (2026-09-06): four rounds of ad-hoc Q&A stood in for stages 0
+    and 1. The answers were useful, but `/slice` and `/grill-me` were never run,
+    so the design-tree discipline and the frontier-per-round structure were both
+    lost.
+  - The drift is gradual and each step looks reasonable — the user asks a
+    question, you answer it, they ask another. Notice the *pattern*, not the
+    individual turn. `grilling` is the model-invocable implementation behind
   `grill-me` if the behaviour is needed directly.
 - **Stages 0, 1 and 3 are conversations; only 2, 4 and 5 produce artifacts.**
 - **This pipeline is expensive at scale.** N epics costs roughly 4N interactive

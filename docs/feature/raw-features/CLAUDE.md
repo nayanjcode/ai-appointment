@@ -6,10 +6,16 @@ Derived from `docs/Initial raw problem List.md` (9 problem sections) plus the
 owner's feature narrative. **Input was problems, not features** — this document
 is the first pass at converting one into the other.
 
-Status: **raw**. Not grilled, not specified. Feeds stage 0 (`/slice`) of the
-pipeline in `CLAUDE.md`.
+Status: **superseded as the unit of work.** Stage 0 (`/slice`) ran on
+2026-09-07 and re-cut F01–F10 into five epics.
 
-## Features
+> **Read [EPICS.md](EPICS.md) first.** E1–E5 are what gets a PRD. The F-files
+> below remain the problem-domain reference — capability lists, source
+> traceability, and the per-feature open questions that feed stage 1 — but do
+> **not** scope work against them. F01–F10 was sliced by noun and the nouns
+> overlapped; the epics are sliced by verb and do not.
+
+## Features (reference only — see [EPICS.md](EPICS.md) for the unit of work)
 
 | ID | Feature | From problems |
 | --- | --- | --- |
@@ -24,8 +30,12 @@ pipeline in `CLAUDE.md`.
 | [F09](F09-billing-payments.md) | Billing & payments | 1 |
 | [F10](F10-identity-roles.md) | Identity, roles & permissions | 1 |
 
-See [SCOPE-AND-CONFLICTS.md](SCOPE-AND-CONFLICTS.md) for what was ruled out,
-what contradicts, and what is unresolved.
+**Read [DECISIONS.md](DECISIONS.md)** — owner answers D1–D26, which supersede
+many of the open questions below. Its "Needed before a PRD" table is the live
+list of what stage 1 must clear, now keyed to epics.
+
+See [SCOPE-AND-CONFLICTS.md](SCOPE-AND-CONFLICTS.md) for what was ruled out and
+what still contradicts.
 
 ## How 9 problems became 10 features
 
@@ -40,11 +50,18 @@ The mapping is not 1:1. Three collapses and one split:
 - **Problem 1 → F03, F09, F10.** #1 is the largest section and is really three
   things: replace the phone channel (F03), absorb the receptionist's payment
   duty (F09), and absorb their delegation duty (F10 roles).
-- **Problem 8 has no feature.** See SCOPE-AND-CONFLICTS.md — it implies a
-  different product.
+- **Problem 8 has no feature.** Superseded by D1 — it is demand capture, not a
+  marketplace. See SCOPE-AND-CONFLICTS.md.
+
+## How 10 features became 5 epics
+
+Sliced by verb rather than noun: *configure* (E1) → *commit* (E2) → *run* (E3)
+→ *know* (E4) → *reach out* (E5). Voice became a capability, not an epic.
+The full mapping is in [EPICS.md](EPICS.md#what-dissolved).
 
 ## Reading note
 
-Every "Open question" below is a real gap in the source, not a placeholder.
-They are the input to stage 1 (`/grill-me`), and none should reach a PRD
-unresolved.
+Every "Open question" in an F-file is a real gap in the source, not a
+placeholder. They are the input to stage 1 (`/grill-me`), and none should reach
+a PRD unresolved — but check DECISIONS.md before treating one as open, since
+many are already answered.
