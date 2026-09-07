@@ -94,6 +94,32 @@ single Write call:
 Silent truncation at large output sizes is the failure mode — chunking prevents
 it entirely.
 
+## Code conventions
+
+Four invariants. **No installed skill covers these** — they were identified as
+gaps during an adversarial review, and they are the ones this domain punishes.
+
+1. **Production-code diffs stay under ~300 lines** (tests excluded). Carry it as
+   a design constraint from slicing onward, not a gate discovered at review. A
+   small slice does not guarantee a small diff — speculative abstractions,
+   unused options, and defensive branches no test demands are what blow it.
+2. **Time is an injected dependency.** Never read the system clock in domain
+   code. Every scheduling test runs against a fake clock. This is a scheduling
+   engine; untestable time is the failure mode.
+3. **Domain quantities are value objects, never raw `number`/`string`.**
+   `Duration`, `TimeSlot`, `SalonId`, `Money`, `QueuePosition`, `Eta`. Time
+   arithmetic on bare numbers is where scheduling engines die.
+4. **Every query carries a salon-scope predicate.** Per-salon configurability
+   makes this multi-tenant. Stated as an invariant because the bug is always the
+   *missing* predicate — an absence, which diffs do not show.
+
+Also decided: **ports-and-adapters at the inbound seam only** — voice and web
+are two real adapters over one domain core, and the three mocked outbound
+integrations (payment, SMS, ML) are two more. Two adapters per seam makes it a
+real seam. **Do not adopt four-layer Clean Architecture** with DTO mapping at
+every crossing; that was evaluated and rejected as premature. Record the seam as
+an ADR via `domain-modeling`.
+
 ## Self-improvement
 
 When you learn something durable, **write it down instead of rediscovering it

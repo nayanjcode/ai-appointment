@@ -393,10 +393,9 @@ rank anyone. That specialist-selection mode must either drop from v1, or be
 redefined as an explicit owner-authored ranking rather than an inferred one.
 **Carried to E2's stage 1.**
 
-## D29 — Mid-day closure does not auto-cancel (PROPOSED, delegated)
+## D29 — Mid-day closure does not auto-cancel
 
-Delegated 2026-09-07 with "do what feels relevant, right and feasible... and not
-let the barber down". **Proposed, not yet approved.**
+Delegated then **approved 2026-09-07**.
 
 When an owner closes hours mid-day (D7):
 
@@ -415,10 +414,9 @@ emergency closure to find customers turning up. Forcing one explicit choice over
 a short list is the honest middle, and it is cheap to build. The distinct tag is
 what stops an emergency from polluting the churn numbers.
 
-## D30 — The committed price is honoured (PROPOSED, delegated)
+## D30 — The committed price is honoured
 
-Delegated 2026-09-07 with "do whatever you like and feel relevant". **Proposed,
-not yet approved.**
+Delegated then **approved 2026-09-07**.
 
 Price is **captured onto the booking at commit time** and honoured at service
 time. Catalog and public-page price changes apply to **new bookings only**.
@@ -429,10 +427,9 @@ page*, not about repricing existing commitments. It is also cheap — one
 denormalised field — and E4 needs the as-charged price anyway for accurate
 historical spend.
 
-## D31 — The public page ships in E1; E3 fills the queue slot (PROPOSED, delegated)
+## D31 — The public page ships in E1; E3 fills the queue slot
 
-Delegated 2026-09-07 with "take the decision relevant to you". **Proposed, not
-yet approved.**
+Delegated then **approved 2026-09-07**.
 
 E1 ships the public page with what E1 owns: services, prices, hours, open/closed.
 Queue length and current wait (D23) render as a **section that appears when E3
@@ -442,6 +439,241 @@ lands**, and are absent until then.
 keeps the epic boundary clean without changing what finally ships — and given
 the whole build is a week, this is build order rather than a real boundary
 question.
+
+## D32 — Capability vocabulary is fixed; salons compose roles from it
+
+Approved 2026-09-07. Stage-1 grill of E1, round 2.
+
+Ten capabilities, authored by developers (the D9 principle applied to people):
+
+`manage_catalog`, `manage_staff`, `manage_hours`, `manage_modes`,
+`confirm_bookings`, `perform_services`, `book_on_behalf`, `settle_charges`,
+`view_analytics`, `receive_escalations`.
+
+A salon creates named roles ("Receptionist") as bundles of these. Salons may
+**not** invent capabilities.
+
+- **The owner role always exists, holds every capability, and cannot be deleted
+  or stripped.** It is D27's escalation fallback and the guarantee that a salon
+  cannot lock itself out.
+- `perform_services` is the structurally significant one: holding it is what
+  puts a person in the queue and gives them service mappings. The owner who also
+  cuts hair is simply an owner who also holds it (D27).
+- **No code may test for a role name.** Every check is against a capability.
+
+## D33 — Staff are created by the owner and invited
+
+Approved 2026-09-07.
+
+The owner creates the staff record (name + phone); the system sends an invite
+over SMS/WhatsApp (mocked, D21); the staff member sets a password on first open.
+
+No self-signup — a salon cannot have strangers claiming to be its stylists. No
+login-less staff records either: D25 makes the specialist personally accountable
+for their own work log, which requires them to have an account.
+
+## D34 — Hours model, and what "open" means
+
+Approved 2026-09-07.
+
+- **Salon hours are the outer bound; per-specialist availability sits inside
+  them** and is validated against them. A specialist cannot be available while
+  the shop is shut.
+- **Booking availability uses *configured* hours** (D7; D19's auto-accept
+  already tests "inside the artist's configured working hours").
+- **The live queue uses *actual* starts** (D4).
+- **The public page shows both, and does not collapse them to one boolean** —
+  "Open · 2 stylists in" versus "Open · nobody in yet". Collapsing is how the
+  customer who arrives at 9:05 finds an empty shop.
+
+## D35 — Modes are salon-level and reference a cancellation rule
+
+Approved 2026-09-07.
+
+- **Booking modes are enabled per salon, not per service.** No stated need for
+  per-service modes, and it multiplies the configuration surface for no gain.
+- **A mode holds a reference to one cancellation-rule type plus that rule's
+  parameters** — slot → `percentage_charge` at 50%; next-available →
+  `no_charge`. The three extensible axes (D28) therefore stay genuinely
+  independent, and adding a cancellation rule requires touching no mode.
+
+## D36 — E1 ships a seed catalog
+
+Approved 2026-09-07.
+
+A default catalog (haircut, beard trim, shave, colour, facial, waxing, …) with
+typical durations and **blank prices**. The owner edits rather than authors.
+
+Prices are deliberately blank: a wrong default price could go live on the public
+page, whereas a wrong default duration only nudges an ETA that D6 corrects from
+history. Turns setup from twenty minutes into two.
+
+## D37 — Per-specialist price override, and the price-confirmation window
+
+Approved 2026-09-07. Owner asked for the override; the window mechanism is
+theirs, refined for two collisions found during the grill.
+
+**Price:** base price per service, with an **optional per-specialist override**.
+
+**The collision:** with *fastest turn* the system picks the specialist, so the
+system picks the price — and under D30 the price is captured at commit, but for
+next-available the specialist may be unknown until service time.
+
+**Resolution, in three parts:**
+
+1. **Named specialist** — price known upfront, no window.
+2. **Any/fastest turn on a mode with no cancellation charge** — assign, disclose
+   the price, then a **10-minute confirmation window capped at the time until
+   their turn**. Silence confirms. This is safe *because* next-available
+   cancellation is free (D11): an auto-confirmed customer who dislikes the price
+   simply cancels.
+3. **Any/fastest turn on a charge-bearing mode** (slot, and VIP where a salon
+   configures a charge) — **quote the salon base price and honour it**, whoever
+   performs the service. The salon absorbs the premium. Timeout-confirms is
+   never applied where cancelling costs money.
+
+**No new state in D10.** The booking is created in Pending immediately but held
+out of the artist's confirmation queue for the window via an `artist_visible_at`
+timestamp. Cancel inside the window and the artist never saw it; confirm or
+lapse and it enters the normal D19 flow. This preserves D3's actual intent — do
+not interrupt someone mid-service for a booking that may evaporate — for the
+cost of one field.
+
+**Knock-on for open item b.** Per-specialist pricing reintroduces the seniority
+dimension D28 removed: a salon charging more for one stylist is signalling
+exactly that. "Best artist" could be defined as the highest-priced qualified
+specialist, with no new data. **Carried to E2's stage 1** as a candidate
+resolution, not a decision.
+
+## D38 — Multi-tenant model, global customer identity
+
+Approved 2026-09-07.
+
+- **Multi-tenant in the model; one salon seeded for the demo.** D2 forces
+  per-salon configuration everywhere, so tenant scoping exists whether or not it
+  is named — better named than discovered.
+- **Customer identity is global; the customer↔salon relationship is per-salon.**
+  One login, one profile per salon for history and CRM. F06's history is
+  per-salon regardless, and global auth sits alongside D2 as a
+  retrofit-is-a-rewrite item.
+
+## D39 — Services carry an optional buffer
+
+Approved 2026-09-07.
+
+One optional buffer per service, set at salon level, added **after** the service
+when scheduling.
+
+D6's learned durations cannot capture it — start/complete brackets the service,
+not the sweeping and chair reset after it. Without a buffer every ETA runs
+slightly optimistic and compounds across the day, and E3's "will this overrun
+the reserved slot" check (D16) is dishonest.
+
+## D40 — Off days, holidays and leave are two mechanisms
+
+Approved 2026-09-07.
+
+- **Recurring weekly off days** live in the hours model, at salon and specialist
+  level (D34).
+- **One-off dated closures are exception entries that override it**, at either
+  level. "The shop is shut on Diwali" and "Ravi is off next Tuesday" are the
+  same feature.
+
+**Consequence:** D7's live mid-day change is just an exception created for today,
+which means D29 already defines what happens to bookings caught inside one.
+
+## D41 — Pay-relevant config changes are attributable
+
+Approved 2026-09-07. Stage-3 gate on PRD 001.
+
+Changes to **service durations** and **per-specialist price overrides** record
+the **actor and a timestamp**.
+
+Deliberately narrow: two columns on two kinds of change, **not** a general audit
+log — that stays out of scope. The justification is D25, which makes the work
+log a pay record; a pay dispute with no record of who changed what is
+unresolvable.
+
+*Origin: this was inferred by the PRD author and asserted in §6 without a
+decision behind it. The gate forced it to be decided or dropped.*
+
+## D42 — Slot, VIP and prebook assign the specialist at booking time
+
+Approved 2026-09-07. Stage-3 gate on PRD 001.
+
+**Only next-available leaves the specialist unknown at request time.** For slot,
+VIP and prebook the specialist is assigned when the booking is made — that is
+what D13's "protected capacity" reserves: a named person's time, not an
+anonymous chair.
+
+**Two consequences:**
+
+1. **D37's confirmation window applies only to next-available.** Everywhere else
+   the price is known before commitment and D30 captures it.
+2. **The charge-bearing pricing branch is deleted.** An earlier draft had the
+   salon quote base price and absorb any premium on charge-bearing modes. It is
+   unnecessary — and it carried a defect: it only considered the assigned
+   specialist being *more* expensive, so it silently overcharged whenever they
+   were cheaper than base.
+
+## D43 — One at-risk mechanism for config changes that invalidate bookings
+
+Approved 2026-09-07. Stage-3 gate on PRD 001.
+
+Four rules were one rule in disguise. **Any configuration change that
+invalidates a committed booking** produces the same behaviour:
+
+Triggers: mid-day or dated closure (D7/D29/D40); salon hours narrowed; service
+deactivated; last specialist mapped to a service removed.
+
+Behaviour: new bookings stop immediately; committed bookings are **never
+auto-cancelled**; the owner gets an at-risk list and decides **per booking**
+(notify-and-cancel, or keep); salon-initiated cancellations raise **no
+`charge_owed`** (D24) and are **tagged distinctly** so E4 never counts them as
+customer churn (D29). Default is keep; cancel-all is one action.
+
+**Also settled:** narrowing salon hours **clamps** specialist availability to
+the new bounds and reports what changed — it does **not** block the save.
+Blocking contradicts D7, whose whole point is that the owner can close the shop
+at will, including mid-emergency.
+
+*Supersedes the bespoke warnings previously specified separately for service
+deactivation and specialist-mapping removal. The gate found one path guarded and
+its twin unguarded.*
+
+## D44 — A Pending booking consumes capacity during the confirmation window
+
+Approved 2026-09-07. Stage-3 gate on PRD 001.
+
+During D37's 10-minute price-confirmation window the booking exists in Pending
+and **holds capacity**. An availability calculation that ignores Pending
+double-books.
+
+Grief risk is accepted: D22 requires login, so there is an identity behind every
+hold, and the window self-clears in ten minutes.
+
+This is E2's definition of Pending, recorded here so E1's PRD does not
+contradict it.
+
+## D45 — E1 specifies the at-risk mechanism; E2 delivers it
+
+Approved 2026-09-07. Stage-3 gate on PRD 001.
+
+The at-risk mechanism (D43) reads bookings, which are E2's entity — so E1 is not
+as independent as EPICS.md claimed.
+
+**Resolution: separate specification from delivery.** The mechanism is specified
+in PRD 001 because E1 config changes trigger it, and **delivered with E2**. E1
+ships the configuration writes; the at-risk list arrives with the epic that owns
+bookings. E1's dependency *for delivery* remains none.
+
+An event bus (E1 emits `config.changed`, E2 subscribes) is the cleaner
+architecture and was rejected as the wrong call for a one-week build — it buys
+decoupling with no second consumer to justify it.
+
+**Residual risk:** if E2 slips, E1 ships with config changes that can silently
+orphan bookings and no list to catch them. Until E2 lands, the triggering
+changes should warn generically that committed bookings may be affected.
 
 ---
 
@@ -491,7 +723,7 @@ passes at stage 1, not in a single up-front sweep.
 | # | Question | Feature |
 | --- | --- | --- |
 | a | Who grants VIP eligibility — owner allowlist, paid tier, both? | F01 |
-| b | "Best artist" — by what measure? **D28 removes the data**: boolean mapping cannot rank. Drop the mode, or make it an owner-authored ranking | E2 |
+| b | "Best artist" — by what measure? D28 removed the ranking data, but **D37 restores a proxy**: per-specialist price signals seniority. Candidate = highest-priced qualified specialist | E2 |
 | c | Late arrival: the 10-min-early rule is stated; the penalty is not | F01/F02 |
 | d | Notification lead time — "X minutes/hours" has no value; SMS/WhatsApp is metered (D8) | F02 |
 | ~~e~~ | ~~Owner vs. admin: four roles or five?~~ **Resolved by D27** — no fixed enum, 1–5 per-salon | E1 |

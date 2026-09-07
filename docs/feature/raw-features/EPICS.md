@@ -15,7 +15,7 @@ overlap.
 
 | ID | Epic | Absorbs | Depends on |
 | --- | --- | --- | --- |
-| [E1](#e1--configure-the-shop) | Configure the shop | F04, staff/role model from F10 | none |
+| [E1](#e1--configure-the-shop) | Configure the shop | F04, staff/role model from F10 | none for delivery (D45) |
 | [E2](#e2--commit-an-appointment) | Commit an appointment | F01, auth from F10, charge creation from F09 | E1 |
 | [E3](#e3--run-the-day) | Run the day | F02, F05 | E2 |
 | [E4](#e4--know-the-customer-and-the-business) | Know the customer and the business | F06, F07, charge settlement from F09 | E2, E3 |
@@ -49,11 +49,24 @@ with no login sees services, prices, hours and open/closed on a public page.
 - [ ] A new mode type added by a developer becomes available as configuration
       with no schema change (D9)
 
-**Depends on:** none.
+**Depends on:** none for delivery. The at-risk mechanism it specifies reads
+bookings and is delivered with E2 (D45).
 
 **Risk / learning:** Proves D2 is architecture, not a settings page. The one
 thing D21 says you may **not** mock. If the extension-point model is wrong here,
 every later epic inherits it and it is a rewrite.
+
+**Stage 1: complete (2026-09-07).** Grilled over three rounds; frontier empty.
+The acceptance criteria above are the epic-level summary — **D27–D40 in
+[DECISIONS.md](DECISIONS.md) are the binding detail** and are what `/spec-writer`
+must consume. Notable additions the grill produced that are not visible above:
+the capability model replacing role names (D27/D32), per-specialist price
+override with its confirmation window (D37), service buffers (D39), and
+exception-based holidays that also cover D7's live closure (D40).
+**Stages 2 and 3: complete.** PRD at [`docs/prd/001-configure-the-shop.md`](../../prd/001-configure-the-shop.md),
+**`status: approved`, `grilled: true`** — the stage-3 gate passed 2026-09-07
+with seven findings, all applied, producing D41–D45. **Ready for stage 4
+(`/slice-the-spec`).**
 
 ---
 

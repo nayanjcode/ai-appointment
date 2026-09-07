@@ -78,3 +78,38 @@ PRDs live in `docs/prd/` and are the **source of truth for feature intent**.
   contradictory, update the PRD and tell the user. Do not silently diverge from
   it in code.
 - Archive with `git mv docs/prd/NNN-slug.md docs/prd/_archive/` — never delete.
+
+## Build stages (after stage 5)
+
+Tickets from stage 5 feed the build loop. There is no single "implement" skill —
+that was evaluated and rejected (15 lines, auto-commits, dangling references).
+
+| Skill | When |
+| --- | --- |
+| `domain-modeling` | **First.** Glossary + ADRs before code. Owns `CONTEXT.md`. |
+| `codebase-design` | Deciding where a seam goes. Deletion test; two-adapters-or-no-seam. |
+| `complexity-review` | Any time a technical proposal appears. Forces Version 1/2/3 + basal cost. |
+| `prototype` | LOGIC branch builds a driveable HTML harness for the state machine — **on a demo build the artifact is the demo.** |
+| `tdd` | Writing code. Delegates to `codebase-design` for seam vocabulary. |
+| `diagnosing-bugs` | Any queue/ETA/concurrency bug. Build the pass/fail loop before theorising. |
+| `code-review` | Before merge. Reviews Standards **and** Spec in parallel sub-agents. |
+| `security-review` | **Once, now, before the schema exists** — it is a threat model, not a diff review. Then dormant. |
+
+Built-in `/code-review` and `/security-review` are diff-scoped and complement,
+not replace, the two above.
+
+### Rejected, with reasons — do not re-propose
+
+| Skill | Why |
+| --- | --- |
+| `implement` (mattpocock) | 15 lines, ends in `git commit`, delegates to skills it does not install |
+| `clean-architecture` | Review-report generator; no code to review. Its own Pitfalls argue against premature layering |
+| `incremental-tdd` | Derivative fork of `tdd` that inlines a weaker copy of `codebase-design` and drops the seam checkpoint |
+| `system-design` | 42-line checklist; its "Scale and Reliability" section is what `complexity-review` exists to kill |
+| `solid` | 286 always-on lines; Object Calisthenics red flags would mangle an ETA re-estimator. Its one good idea is convention #3 in root CLAUDE.md |
+| `test-scaffold` | Test-*after* from an existing source file; hardcoded to pytest/Jest. Worse than nothing |
+| `feature-dev` | Chains `git-commit`, Rails-flavoured. Its ~300-line diff budget was taken as convention #1 |
+| `duc01226` `story` / `production-readiness-review` | 900–1100 lines hard-requiring repo-local files that do not exist here. Not salvageable by forking |
+| `ship` / `pr-*` / `release` | The commit/push **is** the payload — nothing survives stripping |
+| `brainstorming` | Divergent ideation; the 13 deferred decisions need convergence (`grilling`) |
+| `design-system` | Audits an existing system. Revisit once the web UI has components |

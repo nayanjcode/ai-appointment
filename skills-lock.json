@@ -1,6 +1,36 @@
 {
   "version": 1,
   "skills": {
+    "code-review": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/code-review/SKILL.md",
+      "computedHash": "caa9a086baaf9e0f7cd71f64edfa83da6821c05e826b083221f3d02e3d6a1905"
+    },
+    "codebase-design": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/codebase-design/SKILL.md",
+      "computedHash": "5a17552cc1482f1a40124bf4e6c9dbd90ac0dbb47e71c07d47369f9e5f2ae3b5"
+    },
+    "complexity-review": {
+      "source": "eferro/augmented-lean-delivery",
+      "sourceType": "github",
+      "skillPath": "complexity-review/SKILL.md",
+      "computedHash": "2b5bcdc91877b4c030501bedb8ea150b279b6c96c8cb8eb29366bd8220b48bf4"
+    },
+    "diagnosing-bugs": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/diagnosing-bugs/SKILL.md",
+      "computedHash": "37b5e9c624513551da790b52864dc8c84bff996a6d03a380cc6facdcc0a88354"
+    },
+    "domain-modeling": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/domain-modeling/SKILL.md",
+      "computedHash": "a11713c0ff7870efa3c331b2e273f09116158485246edc89ae5088eefd1b0b48"
+    },
     "grill-me": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -18,6 +48,18 @@
       "sourceType": "github",
       "skillPath": "hamburger-method/SKILL.md",
       "computedHash": "1f5e9c024cf47dc0f1bf9d3753f5f4b5cdc256673d9e75f9b459cb3a9bf29e83"
+    },
+    "prototype": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/prototype/SKILL.md",
+      "computedHash": "d3fc74689bd993e39c44bfae510d014eecffbeec2922764b065377fd1327c0f6"
+    },
+    "security-review": {
+      "source": "sunnypatneedi/claude-starter-kit",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/security-review/SKILL.md",
+      "computedHash": "22a6fbaef7715754fa2a2818bf2d7343b18c688dbe41cf92588d62ce949ec06d"
     },
     "slice": {
       "source": "thoughtbot/rails-consultant",
@@ -42,6 +84,12 @@
       "sourceType": "github",
       "skillPath": "story-splitting/SKILL.md",
       "computedHash": "1841f76ad9da75b52e68bb441bc705fe401b5f40552a585a97c12e31a5ba9edc"
+    },
+    "tdd": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/tdd/SKILL.md",
+      "computedHash": "e753a5da75292bbe59d302d89566bc2c53d0e73944da2f0e944a7578883c07d0"
     }
   }
 }
